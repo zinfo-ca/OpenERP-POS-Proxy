@@ -6,8 +6,9 @@ var poleDisplay = new EscPosDisplay("/dev/ttyUSB0");
 
 poleDisplay.on("ready", function() {
     console.log('poleDisplay ready.');
-    poleDisplay.text("      Bienvenue\n\r       Welcoméà");
     poleDisplay.showCursor(true);
+    poleDisplay.centeredUpperLine("Bienvenue");
+    poleDisplay.centeredBottomLine("Welcome");
 });
 
 exports.print_receipt = function(req, res) {
