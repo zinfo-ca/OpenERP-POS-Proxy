@@ -56,20 +56,19 @@ exports.pole_display = function(req, res) {
         text = jsonpData.params.text;
     }
 
-    if (req.query.line1) {
-
-        text = req.query.line1;
-        if (req.query.line2) {
-            text += "\n\r";
-            text += req.query.line2;
-        }
-    }
-
     if (text) {
         console.log('Pole display: ' + text);
         poleDisplay.text("\x1b\x40");
         poleDisplay.text(text);
+    } else {
+        if (req.query.line1) {
+            poleDisplay.centeredUpperLine(req.query.line1);
+        }
+        if (req.query.line2) {
+            poleDisplay.centeredBottomLine(req.query.line2);
+        }
     }
+
 
     var jsonResponse = {id: "OK"};
     res.json(jsonResponse);
