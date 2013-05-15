@@ -2,13 +2,21 @@
 
 var escpos = require('../lib/node-escpos.js');
 var EscPosDisplay = escpos.EscPosDisplay;
+var EscPosPrinter = escpos.EscPosPrinter;
 var poleDisplay = new EscPosDisplay("/dev/ttyUSB0");
+var printer = new EscPosPrinter("/dev/ttyS0");
 
 poleDisplay.on("ready", function() {
     console.log('poleDisplay ready.');
     poleDisplay.showCursor(true);
     poleDisplay.centeredUpperLine("Bienvenue");
     poleDisplay.centeredBottomLine("Welcome");
+});
+
+printer.on("ready", function() {
+    console.log('printer ready.');
+    printer.printLine("printLine test");
+    printer.printCentered("printCentered test");
 });
 
 exports.print_receipt = function(req, res) {
