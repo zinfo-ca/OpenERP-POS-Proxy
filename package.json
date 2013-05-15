@@ -1,12 +1,33 @@
 {
-  "name": "application-name",
+  "name": "OpenERP-POS-Proxy",
   "version": "0.0.1",
-  "private": true,
+  "description": "OpenERP POS Proxy written in node.js. The proxy is used to communicate with devices like thermal printer, pole display, cash drawers",
+  "author": {
+    "name": "Jean-Philippe Blais",
+    "email": "jphblais@zinfo.ca",
+    "url": "http://www.zinfo.ca"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/zinfo-ca/OpenERP-POS-Proxy.git"
+  },
+  "maintainers": [
+    {
+      "name": "Jean-Philippe Blais",
+      "email": "jphblais@zinfo.ca"
+    },
+    {
+      "name": "Alexandre Cascio",
+      "email": "acascio@zinfo.ca"
+    }
+  ],
   "scripts": {
     "start": "node app.js"
   },
   "dependencies": {
     "express": "3.2.4",
-    "jade": "*"
+    "jade": "*",
+    "serialport": "*",
+    "iconv": "*"
   }
 }
