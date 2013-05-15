@@ -46,17 +46,17 @@ exports.print_receipt = function(req, res) {
         printer.printCentered(receipt.company['phone']);
         printer.printCentered("F A C T U R E");
         printer.printCentered(receipt.date['year'] + '-' + receipt.date['month'] + '-'+ receipt.date['date'] + ' - ' + receipt.date['hour'] + ':' + receipt.date['minute']);
-        printer.printCentered(receipt.orderlines[0].quantity + ' ' + receipt.orderlines[0].product_name + ' ' + receipt.orderlines[0].price_display + ' $');
-        printer.printCentered('Sous-Total ' + receipt.subtotal + ' $');
+        printer.printCentered(receipt.orderlines[0].quantity + ' ' + receipt.orderlines[0].product_name + ' ' + receipt.orderlines[0].price_display.toFixed(2) + ' $');
+        printer.printCentered('Sous-Total ' + receipt.subtotal.toFixed(2) + ' $');
         printer.printCentered('TPS ' + receipt.orderlines[0].tps + ' $');
         printer.printCentered('TVQ ' + receipt.orderlines[0].tvq + ' $');
-        printer.printCentered('Total ' + receipt.orderlines[0].tax + ' $');
+        printer.printCentered('Total ' + receipt.total_with_tax.toFixed(2) + ' $');
         printer.printCentered('ARGENT ' + receipt.total_paid + ' $');        
         printer.printLine('No. TPS: ');
         printer.printLine('No. TPS: ');        
         printer.printCentered('VOUS AVEZ ETE SERVI PAR');
         printer.printCentered(receipt.cashier);
-        printer.printCentered('Merci et revenez nous voir!');                                          
+        printer.printCentered('Merci et revenez nous voir!');         
     }
 
     jsonResponse.id = req.query.id;
