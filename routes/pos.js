@@ -86,25 +86,32 @@ exports.print_receipt = function(req, res) {
         printer.printCentered('SOUS-TOTAL' + padl('$' + receipt.subtotal.toFixed(2), 32));
         printer.printCentered('TPS 5%' + padl('$' + tpsTot.toFixed(2), 36));
         printer.printCentered('TVQ 9,975%' + padl('$' + tvqTot.toFixed(2), 32));
-        printer.printCentered('TOTAL' + padl('$' + receipt.total_with_tax.toFixed(2), 14));
+        printer.printCommand('\x1b\x21\x20');
+        printer.printCenteredLen('TOTAL' + padl('$' + receipt.total_with_tax.toFixed(2), 7),21);
+        printer.printCommand('\x1b\x21\x00');
         printer.printCentered('Argent' + padl('$' + receipt.total_paid.toFixed(2), 13));
         printer.printCentered('REMISE' + padl('$' + receipt.change.toFixed(2), 13));
         printer.printCentered(' ');
-        printer.printLine('Nombre d\'articles: ' + qteTot);
-        printer.printCentered('MERCI!');
+        printer.printLine('Nombre d\'articles: ' + qteTot);        
+        printer.printCommand('\x1b\x21\x20');
+        printer.printCenteredLen('MERCI!',21);
+        printer.printCommand('\x1b\x21\x00');
         printer.printCentered(' ');
         printer.printCentered(' ');
         printer.printCentered('==========================================');
         printer.printCentered('TPS: ' + tpsTot.toFixed(2) + ' $    ' + 'TVQ: ' + tvqTot.toFixed(2) + ' $');
-        printer.printCentered('Total : ' + receipt.total_with_tax.toFixed(2) + ' $');
+        printer.printCommand('\x1b\x21\x20');        
+        printer.printCenteredLen('Total : ' + receipt.total_with_tax.toFixed(2) + ' $',21);
+        printer.printCommand('\x1b\x21\x00');        
         printer.printCentered('PAIMENT REÇU');             
         printer.printCentered(' ');
         printer.printCentered(' ');
         printer.printCentered(' ');
         printer.printCentered(' ');
         printer.printCentered(' ');
-        printer.printCentered(' ');               
-        printer.printCommand('\x1B\x6D');
+        printer.printCentered(' ');
+        printer.printCommand('\x1d\x56\x01'); // Partially cut the paper;
+        printer.printCommand('\x1b\x70\x00\x05\x05');              
     }
 
     jsonResponse.id = req.query.id;
