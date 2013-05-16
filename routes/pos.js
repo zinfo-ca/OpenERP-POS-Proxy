@@ -15,8 +15,8 @@ poleDisplay.on("ready", function() {
 
 printer.on("ready", function() {
     console.log('printer ready.');
-    printer.printLine("printLine test");
-    printer.printCentered("printCentered test");
+    //printer.printLine("printLine test");
+    //printer.printCentered("printCentered test");
 });
 
 exports.print_receipt = function(req, res) {
@@ -38,25 +38,74 @@ exports.print_receipt = function(req, res) {
         }
     }
 
+    var replicate = function(len, char) {
+        return Array(len + 1).join(char || ' ');
+    };
+
+    var padr = function(txt, len, char) {
+        if (txt.length >= len)
+            return txt.substr(0, len);
+        return txt + replicate(len - txt.length, char);
+    };
+
+    var padl = function(txt, len, char) {
+        if (txt.length >= len)
+            return txt.substr(0, len);
+        return replicate(len - txt.length, char) + txt;
+    };
+
     if (jsonpData) {
         receipt = jsonpData.params.receipt;
         console.log(receipt);
         printer.printCentered(receipt.company['name']);
-        printer.printCentered(receipt.company['contact_address']);
-        printer.printCentered(receipt.company['phone']);
-        printer.printCentered("F A C T U R E");
-        printer.printCentered(receipt.date['year'] + '-' + receipt.date['month'] + '-'+ receipt.date['date'] + ' - ' + receipt.date['hour'] + ':' + receipt.date['minute']);
-        printer.printCentered(receipt.orderlines[0].quantity + ' ' + receipt.orderlines[0].product_name + ' ' + receipt.orderlines[0].price_display.toFixed(2) + ' $');
-        printer.printCentered('Sous-Total ' + receipt.subtotal.toFixed(2) + ' $');
-        printer.printCentered('TPS ' + receipt.orderlines[0].tps + ' $');
-        printer.printCentered('TVQ ' + receipt.orderlines[0].tvq + ' $');
-        printer.printCentered('Total ' + receipt.total_with_tax.toFixed(2) + ' $');
-        printer.printCentered('ARGENT ' + receipt.total_paid + ' $');        
-        printer.printLine('No. TPS: ');
-        printer.printLine('No. TPS: ');        
-        printer.printCentered('VOUS AVEZ ETE SERVI PAR');
-        printer.printCentered(receipt.cashier);
-        printer.printCentered('Merci et revenez nous voir!');         
+        var address = receipt.company['contact_address'].split("\n");
+        printer.printCentered(address[0]);
+        printer.printCentered(address[2]);
+        printer.printCentered('Tél.: ' + receipt.company['phone']);
+        printer.printCentered(' ');
+        var facture = receipt.name.split(" ");
+        printer.printLine('FACTURE ' + facture[1]);
+        if (receipt.date['month'].toString().length == 1) {
+            receipt.date['month'] = "0" + receipt.date['month'];
+        }
+        if (receipt.date['minute'].toString().length == 1) {
+            receipt.date['minute'] = "0" + receipt.date['minute'];
+        }                
+        printer.printLine(receipt.date['date'] + '-' + receipt.date['month'] + '-' + receipt.date['year'] + ' ' + receipt.date['hour'] + ':' + receipt.date['minute']);
+        printer.printCentered('------------------------------------------');
+        var qteTot = 0;
+        var tpsTot = 0;
+        var tvqTot = 0;
+        for (var i in receipt.orderlines) {
+            printer.printLine(padr(receipt.orderlines[i].product_name, 21) + '- Qté ' + receipt.orderlines[i].quantity + padl('$' + receipt.orderlines[i].price_display.toFixed(2), 13));
+            qteTot += receipt.orderlines[i].quantity;
+            tpsTot += receipt.orderlines[i].tps;
+            tvqTot += receipt.orderlines[i].tvq;
+        }
+        printer.printCentered('------------------------------------------');        
+        printer.printCentered('SOUS-TOTAL' + padl('$' + receipt.subtotal.toFixed(2), 32));
+        printer.printCentered('TPS 5%' + padl('$' + tpsTot.toFixed(2), 36));
+        printer.printCentered('TVQ 9,975%' + padl('$' + tvqTot.toFixed(2), 32));
+        printer.printCentered('TOTAL' + padl('$' + receipt.total_with_tax.toFixed(2), 14));
+        printer.printCentered('Argent' + padl('$' + receipt.total_paid.toFixed(2), 13));
+        printer.printCentered('REMISE' + padl('$' + receipt.change.toFixed(2), 13));
+        printer.printCentered(' ');
+        printer.printLine('Nombre d\'articles: ' + qteTot);
+        printer.printCentered('MERCI!');
+        printer.printCentered(' ');
+        printer.printCentered(' ');
+        printer.printCentered('==========================================');
+        printer.printCentered('TPS: ' + tpsTot.toFixed(2) + ' $    ' + 'TVQ: ' + tvqTot.toFixed(2) + ' $');
+        printer.printCentered('Total : ' + receipt.total_with_tax.toFixed(2) + ' $');
+        printer.printCentered('PAIMENT REÇU');
+        
+        
+        printer.printCentered(' ');
+        printer.printCentered(' ');
+        printer.printCentered(' ');
+        printer.printCentered(' ');
+        printer.printCentered(' ');
+        printer.printCentered(' ');               
     }
 
     jsonResponse.id = req.query.id;
