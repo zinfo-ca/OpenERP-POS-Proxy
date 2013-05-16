@@ -77,7 +77,7 @@ exports.print_receipt = function(req, res) {
         var tpsTot = 0;
         var tvqTot = 0;
         for (var i in receipt.orderlines) {
-            printer.printLine(padr(receipt.orderlines[i].product_name, 21) + '- Qté ' + receipt.orderlines[i].quantity + padl('$' + receipt.orderlines[i].price_display.toFixed(2), 13));
+            printer.printLine(padr(receipt.orderlines[i].product_name, 21) + '- Qté ' + receipt.orderlines[i].quantity + padl('$' + receipt.orderlines[i].price_display.toFixed(2), 14));
             qteTot += receipt.orderlines[i].quantity;
             tpsTot += receipt.orderlines[i].tps;
             tvqTot += receipt.orderlines[i].tvq;
@@ -97,15 +97,14 @@ exports.print_receipt = function(req, res) {
         printer.printCentered('==========================================');
         printer.printCentered('TPS: ' + tpsTot.toFixed(2) + ' $    ' + 'TVQ: ' + tvqTot.toFixed(2) + ' $');
         printer.printCentered('Total : ' + receipt.total_with_tax.toFixed(2) + ' $');
-        printer.printCentered('PAIMENT REÇU');
-        
-        
+        printer.printCentered('PAIMENT REÇU');             
         printer.printCentered(' ');
         printer.printCentered(' ');
         printer.printCentered(' ');
         printer.printCentered(' ');
         printer.printCentered(' ');
         printer.printCentered(' ');               
+        printer.printCommand('\x1B\x6D');
     }
 
     jsonResponse.id = req.query.id;
