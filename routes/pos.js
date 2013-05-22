@@ -70,7 +70,7 @@ exports.print_receipt = function(req, res) {
         }
         if (receipt.date['minute'].toString().length == 1) {
             receipt.date['minute'] = "0" + receipt.date['minute'];
-        }                
+        }
         printer.printLine(receipt.date['date'] + '-' + receipt.date['month'] + '-' + receipt.date['year'] + ' ' + receipt.date['hour'] + ':' + receipt.date['minute']);
         printer.printCentered('------------------------------------------');
         var qteTot = 0;
@@ -82,28 +82,28 @@ exports.print_receipt = function(req, res) {
             tpsTot += receipt.orderlines[i].tps;
             tvqTot += receipt.orderlines[i].tvq;
         }
-        printer.printCentered('------------------------------------------');        
+        printer.printCentered('------------------------------------------');
         printer.printCentered('SOUS-TOTAL' + padl('$' + receipt.subtotal.toFixed(2), 32));
         printer.printCentered('TPS 5%' + padl('$' + tpsTot.toFixed(2), 36));
         printer.printCentered('TVQ 9,975%' + padl('$' + tvqTot.toFixed(2), 32));
         printer.printCommand('\x1b\x21\x20');
-        printer.printCenteredLen('TOTAL' + padl('$' + receipt.total_with_tax.toFixed(2), 7),21);
+        printer.printCenteredLen('TOTAL' + padl('$' + receipt.total_with_tax.toFixed(2), 7), 21);
         printer.printCommand('\x1b\x21\x00');
         printer.printCentered('Argent' + padl('$' + receipt.total_paid.toFixed(2), 13));
         printer.printCentered('REMISE' + padl('$' + receipt.change.toFixed(2), 13));
         printer.printCentered(' ');
-        printer.printLine('Nombre d\'articles: ' + qteTot);        
+        printer.printLine('Nombre d\'articles: ' + qteTot);
         printer.printCommand('\x1b\x21\x20');
-        printer.printCenteredLen('MERCI!',21);
+        printer.printCenteredLen('MERCI!', 21);
         printer.printCommand('\x1b\x21\x00');
         printer.printCentered(' ');
         printer.printCentered(' ');
         printer.printCentered('==========================================');
         printer.printCentered('TPS: ' + tpsTot.toFixed(2) + ' $    ' + 'TVQ: ' + tvqTot.toFixed(2) + ' $');
-        printer.printCommand('\x1b\x21\x20');        
-        printer.printCenteredLen('Total : ' + receipt.total_with_tax.toFixed(2) + ' $',21);
-        printer.printCommand('\x1b\x21\x00');        
-        printer.printCentered('PAIMENT REÇU');             
+        printer.printCommand('\x1b\x21\x20');
+        printer.printCenteredLen('Total : ' + receipt.total_with_tax.toFixed(2) + ' $', 21);
+        printer.printCommand('\x1b\x21\x00');
+        printer.printCentered('PAIMENT REÇU');
         printer.printCentered(' ');
         printer.printCentered(' ');
         printer.printCentered(' ');
@@ -111,7 +111,7 @@ exports.print_receipt = function(req, res) {
         printer.printCentered(' ');
         printer.printCentered(' ');
         printer.printCommand('\x1d\x56\x01'); // Partially cut the paper;
-        printer.printCommand('\x1b\x70\x00\x05\x05');              
+        printer.printCommand('\x1b\x70\x00\x05\x05');
     }
 
     jsonResponse.id = req.query.id;
@@ -128,17 +128,22 @@ exports.open_cashbox = function(req, res) {
 };
 
 exports.pole_display = function(req, res) {
-    var text;
-
+    console.log('METHOD');
+    console.log(req.method);
+    console.log('QUERY');
+    console.log(req.query);
+    var product;
+    
     if (req.query.r) {
         var jsonpData = JSON.parse(req.query.r);
-        text = jsonpData.params.text;
+        console.log("id? ", jsonpData['id']);
+        product = jsonpData.params.product;       
     }
 
-    if (text) {
-        console.log('Pole display: ' + text);
+    if (product) {
+        console.log('Pole display: ' , product);
         poleDisplay.text("\x1b\x40");
-        poleDisplay.text(text);
+        //poleDisplay.text(product);
     } else {
         if (req.query.line1) {
             poleDisplay.centeredUpperLine(req.query.line1);
@@ -149,7 +154,9 @@ exports.pole_display = function(req, res) {
     }
 
 
-    var jsonResponse = {id: "OK"};
+    var jsonResponse = {id: jsonpData['id']};
+    console.log('RESPONSE');
+    console.log(jsonResponse);    
     res.json(jsonResponse);
 };
 
