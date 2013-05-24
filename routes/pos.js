@@ -19,6 +19,22 @@ printer.on("ready", function() {
     //printer.printCentered("printCentered test");
 });
 
+var replicate = function(len, char) {
+    return Array(len + 1).join(char || ' ');
+};
+
+var padr = function(txt, len, char) {
+    if (txt.length >= len)
+        return txt.substr(0, len);
+    return txt + replicate(len - txt.length, char);
+};
+
+var padl = function(txt, len, char) {
+    if (txt.length >= len)
+        return txt.substr(0, len);
+    return replicate(len - txt.length, char) + txt;
+};
+
 exports.print_receipt = function(req, res) {
     console.log('METHOD');
     console.log(req.method);
@@ -37,22 +53,6 @@ exports.print_receipt = function(req, res) {
             jsonpData = JSON.parse(req.body.r);
         }
     }
-
-    var replicate = function(len, char) {
-        return Array(len + 1).join(char || ' ');
-    };
-
-    var padr = function(txt, len, char) {
-        if (txt.length >= len)
-            return txt.substr(0, len);
-        return txt + replicate(len - txt.length, char);
-    };
-
-    var padl = function(txt, len, char) {
-        if (txt.length >= len)
-            return txt.substr(0, len);
-        return replicate(len - txt.length, char) + txt;
-    };
 
     if (jsonpData) {
         receipt = jsonpData.params.receipt;
@@ -118,7 +118,7 @@ exports.print_receipt = function(req, res) {
         console.log('poleDisplay ready.');
         poleDisplay.showCursor(true);
         poleDisplay.centeredUpperLine("Bienvenue");
-        poleDisplay.centeredBottomLine("Welcome");        
+        poleDisplay.centeredBottomLine("Welcome");
     }
 
     //jsonResponse.id = req.query.id;
@@ -143,22 +143,6 @@ exports.pole_display = function(req, res) {
     console.log(req.query);
     var product;
 
-    var replicate = function(len, char) {
-        return Array(len + 1).join(char || ' ');
-    };
-
-    var padr = function(txt, len, char) {
-        if (txt.length >= len)
-            return txt.substr(0, len);
-        return txt + replicate(len - txt.length, char);
-    };
-
-    var padl = function(txt, len, char) {
-        if (txt.length >= len)
-            return txt.substr(0, len);
-        return replicate(len - txt.length, char) + txt;
-    };
-
     if (req.query.r) {
         var jsonpData = JSON.parse(req.query.r);
         product = jsonpData.params.product;
@@ -173,7 +157,7 @@ exports.pole_display = function(req, res) {
             poleDisplay.text(padr(product.product_name, 20));
             poleDisplay.text("\r");
             poleDisplay.text(padl('$' + product.price.toFixed(2), 20));
-        } else if (product.context == "payment"){
+        } else if (product.context == "payment") {
             console.log('Pole display Payment: ', product);
             console.log("Total: ", product.total_with_tax.toFixed(2));
             poleDisplay.text("\x1b\x40");
