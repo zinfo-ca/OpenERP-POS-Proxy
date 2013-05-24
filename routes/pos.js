@@ -133,17 +133,37 @@ exports.pole_display = function(req, res) {
     console.log('QUERY');
     console.log(req.query);
     var product;
-    
+
+    var replicate = function(len, char) {
+        return Array(len + 1).join(char || ' ');
+    };
+
+    var padr = function(txt, len, char) {
+        if (txt.length >= len)
+            return txt.substr(0, len);
+        return txt + replicate(len - txt.length, char);
+    };
+
+    var padl = function(txt, len, char) {
+        if (txt.length >= len)
+            return txt.substr(0, len);
+        return replicate(len - txt.length, char) + txt;
+    };
+
     if (req.query.r) {
         var jsonpData = JSON.parse(req.query.r);
-        console.log("id? ", jsonpData['id']);
-        product = jsonpData.params.product;       
+        product = jsonpData.params.product;
     }
 
     if (product) {
-        console.log('Pole display: ' , product);
-        poleDisplay.text("\x1b\x40");
-        //poleDisplay.text(product);
+        console.log('Pole display: ', product);
+        console.log("Procuct Name: ", product.product_name);
+        console.log("Price: ", product.price.toFixed(2));
+        poleDisplay.text("\x1b\x40");        
+        poleDisplay.text(padr(product.product_name, 20));
+        poleDisplay.text("\r");
+        poleDisplay.text(padl('$' + product.price.toFixed(2), 20));
+
     } else {
         if (req.query.line1) {
             poleDisplay.centeredUpperLine(req.query.line1);
@@ -154,9 +174,9 @@ exports.pole_display = function(req, res) {
     }
 
 
-    var jsonResponse = {id: jsonpData['id']};
+    var jsonResponse = {};
     console.log('RESPONSE');
-    console.log(jsonResponse);    
+    console.log(jsonResponse);
     res.json(jsonResponse);
 };
 
