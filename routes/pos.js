@@ -8,7 +8,6 @@ var printer = new EscPosPrinter("/dev/ttyS0");
 
 poleDisplay.on("ready", function() {
     console.log('poleDisplay ready.');
-    poleDisplay.showCursor(true);
     poleDisplay.centeredUpperLine("Bienvenue");
     poleDisplay.centeredBottomLine("Welcome");
 });
@@ -116,7 +115,6 @@ exports.print_receipt = function(req, res) {
         printer.printCommand('\x1d\x56\x01'); // Partially cut the paper;
         printer.printCommand('\x1b\x70\x00\x05\x05');
         console.log('poleDisplay ready.');
-        poleDisplay.showCursor(true);
         poleDisplay.centeredUpperLine("Bienvenue");
         poleDisplay.centeredBottomLine("Welcome");
     }
