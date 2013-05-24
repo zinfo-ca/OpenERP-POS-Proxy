@@ -866,7 +866,8 @@ function openerp_pos_screens(instance, module){ //module is instance.point_of_sa
             if(this.pos.iface_cashdrawer){
                 this.pos.proxy.open_cashbox();
             }
-
+            this.pos.proxy.pole_display(this.pos.get('selectedOrder').export_for_pole_display());			
+            
             this.set_numpad_state(this.pos_widget.numpad.state);
             
             this.back_button = this.add_action_button({

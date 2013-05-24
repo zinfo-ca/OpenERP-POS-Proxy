@@ -57,6 +57,9 @@ exports.print_receipt = function(req, res) {
     if (jsonpData) {
         receipt = jsonpData.params.receipt;
         console.log(receipt);
+//        poleDisplay.text("\x1b\x40");
+//        poleDisplay.centeredUpperLine('ARGENT:  ' + '$' + receipt.total_paid.toFixed(2));
+//        poleDisplay.centeredBottomLine('REMISE:  ' + '$' + receipt.change.toFixed(2));
         printer.printCentered(receipt.company['name']);
         var address = receipt.company['contact_address'].split("\n");
         printer.printCentered(address[0]);
@@ -112,9 +115,14 @@ exports.print_receipt = function(req, res) {
         printer.printCentered(' ');
         printer.printCommand('\x1d\x56\x01'); // Partially cut the paper;
         printer.printCommand('\x1b\x70\x00\x05\x05');
+        console.log('poleDisplay ready.');
+        poleDisplay.showCursor(true);
+        poleDisplay.centeredUpperLine("Bienvenue");
+        poleDisplay.centeredBottomLine("Welcome");        
     }
 
-    jsonResponse.id = req.query.id;
+    //jsonResponse.id = req.query.id;
+    jsonResponse = {};
     console.log('RESPONSE');
     console.log(jsonResponse);
     res.json(jsonResponse);
@@ -157,14 +165,20 @@ exports.pole_display = function(req, res) {
     }
 
     if (product) {
-        console.log('Pole display: ', product);
-        console.log("Procuct Name: ", product.product_name);
-        console.log("Price: ", product.price.toFixed(2));
-        poleDisplay.text("\x1b\x40");        
-        poleDisplay.text(padr(product.product_name, 20));
-        poleDisplay.text("\r");
-        poleDisplay.text(padl('$' + product.price.toFixed(2), 20));
-
+        if (product.context == "product") {
+            console.log('Pole display Product: ', product);
+            console.log("Procuct Name: ", product.product_name);
+            console.log("Price: ", product.price.toFixed(2));
+            poleDisplay.text("\x1b\x40");
+            poleDisplay.text(padr(product.product_name, 20));
+            poleDisplay.text("\r");
+            poleDisplay.text(padl('$' + product.price.toFixed(2), 20));
+        } else if (product.context == "payment"){
+            console.log('Pole display Payment: ', product);
+            console.log("Total: ", product.total_with_tax.toFixed(2));
+            poleDisplay.text("\x1b\x40");
+            poleDisplay.centeredUpperLine('TOTAL:  ' + '$' + product.total_with_tax.toFixed(2));
+        }
     } else {
         if (req.query.line1) {
             poleDisplay.centeredUpperLine(req.query.line1);

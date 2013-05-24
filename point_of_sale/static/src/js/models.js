@@ -452,9 +452,10 @@ function openerp_pos_models(instance, module){ //module is instance.point_of_sal
         },
         export_for_pole_display: function() {
             return {
+                context: "product",
                 quantity: this.get_quantity(),
                 product_name: this.get_product().get('name'),
-                price: this.get_unit_price()
+                price: this.get_unit_price()                
             };
         },
         //used to create a json of the ticket, to be sent to the printer
@@ -752,6 +753,12 @@ function openerp_pos_models(instance, module){ //module is instance.point_of_sal
         get_screen_data: function(key){
             return this.screen_data[key];
         },
+        export_for_pole_display: function() {
+            return {
+                context: "payment",
+                total_with_tax: this.getTotalTaxIncluded()
+            };
+        },                                
         // exports a JSON for receipt printing
         export_for_printing: function(){
             var orderlines = [];
