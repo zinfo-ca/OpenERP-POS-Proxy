@@ -123,7 +123,8 @@ exports.print_receipt = function(req, res) {
 exports.open_cashbox = function(req, res) {
     var jsonpData = JSON.parse(req.query.r);
     console.log(jsonpData);
-    var jsonResponse = {id: jsonpData.params.id};
+    //var jsonResponse = {id: jsonpData.params.id};
+    var jsonResponse = {};
     res.json(jsonResponse);
 };
 
