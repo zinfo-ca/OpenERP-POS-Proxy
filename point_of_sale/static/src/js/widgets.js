@@ -611,6 +611,7 @@ function openerp_pos_widgets(instance, module){ //module is instance.point_of_sa
             this.pos.get('products').bind('reset', function(){
                 self.renderElement();
             });
+            this.pos.proxy.pole_display("reload");
         },
         renderElement: function() {
             var self = this;
@@ -1094,6 +1095,7 @@ function openerp_pos_widgets(instance, module){ //module is instance.point_of_sa
             self.close();
         },
         close: function() {
+            this.pos.proxy.pole_display("closed");
             var self = this;
             this.pos.barcode_reader.disconnect();
             return new instance.web.Model("ir.model.data").get_func("search_read")([['name', '=', 'action_client_pos_menu']], ['res_id']).pipe(
@@ -1109,7 +1111,7 @@ function openerp_pos_widgets(instance, module){ //module is instance.point_of_sa
         destroy: function() {
             instance.webclient.set_content_full_screen(false);
             self.pos = undefined;
-            this._super();
+            this._super();            
         }
     });
 }

@@ -145,7 +145,7 @@ exports.pole_display = function(req, res) {
         var jsonpData = JSON.parse(req.query.r);
         product = jsonpData.params.product;
     }
-
+console.log("Alex: ",product);
     if (product) {
         if (product.context == "product") {
             console.log('Pole display Product: ', product);
@@ -160,7 +160,13 @@ exports.pole_display = function(req, res) {
             console.log("Total: ", product.total_with_tax.toFixed(2));
             poleDisplay.text("\x1b\x40");
             poleDisplay.centeredUpperLine('TOTAL:  ' + '$' + product.total_with_tax.toFixed(2));
-        }
+        } else if (product == "reload") {
+            poleDisplay.centeredUpperLine("Bienvenue");
+            poleDisplay.centeredBottomLine("Welcome");        
+        } else if (product == "closed") {
+            poleDisplay.centeredUpperLine("Fermé");
+            poleDisplay.centeredBottomLine("Closed");
+        }        
     } else {
         if (req.query.line1) {
             poleDisplay.centeredUpperLine(req.query.line1);
