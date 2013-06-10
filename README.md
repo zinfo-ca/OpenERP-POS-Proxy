@@ -22,13 +22,8 @@ The arguments are optional.
 Defaults are :
 
 PrinterDevicePort = "/dev/ttyS0"
-
 DisplayDevicePort = "/dev/ttyUSB0"
-
 DisplayInitFirstLine = "Bonjour"
-
 DisplayInitSecondLine = "Welcome"
-
 DisplayOffFirstLine = "Fermé"
-
 DisplayOffSecondLine = "Closed"
