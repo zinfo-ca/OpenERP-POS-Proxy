@@ -1,15 +1,32 @@
 "use strict";
 
 var escpos = require('../lib/node-escpos.js');
-var EscPosDisplay = escpos.EscPosDisplay;
-var EscPosPrinter = escpos.EscPosPrinter;
-var poleDisplay = new EscPosDisplay("/dev/ttyUSB0");
-var printer = new EscPosPrinter("/dev/ttyS0");
 
+var EscPosPrinter = escpos.EscPosPrinter;
+var EscPosDisplay = escpos.EscPosDisplay;
+
+var devPorts = process.argv.splice(2);
+if (devPorts[0] === undefined){
+    devPorts[0] = "/dev/ttyS0";
+}
+
+if (devPorts[1] === undefined){
+    devPorts[1] = "/dev/ttyUSB0";
+}
+var printer = new EscPosPrinter(devPorts[0]);
+var poleDisplay = new EscPosDisplay(devPorts[1]);
+
+if (devPorts[2] === undefined){
+    devPorts[2] = "Bienvenu";
+}
+
+if (devPorts[3] === undefined){
+    devPorts[3] = "Welcome";
+}
 poleDisplay.on("ready", function() {
     console.log('poleDisplay ready.');
-    poleDisplay.centeredUpperLine("Bienvenue");
-    poleDisplay.centeredBottomLine("Welcome");
+    poleDisplay.centeredUpperLine(devPorts[2]);
+    poleDisplay.centeredBottomLine(devPorts[3]);
 });
 
 printer.on("ready", function() {
@@ -35,10 +52,6 @@ var padl = function(txt, len, char) {
 };
 
 exports.print_receipt = function(req, res) {
-    console.log('METHOD');
-    console.log(req.method);
-    console.log('QUERY');
-    console.log(req.query);
     var jsonResponse = {};
     var receipt = {};
     var jsonpData;
@@ -55,10 +68,6 @@ exports.print_receipt = function(req, res) {
 
     if (jsonpData) {
         receipt = jsonpData.params.receipt;
-        console.log(receipt);
-//        poleDisplay.text("\x1b\x40");
-//        poleDisplay.centeredUpperLine('ARGENT:  ' + '$' + receipt.total_paid.toFixed(2));
-//        poleDisplay.centeredBottomLine('REMISE:  ' + '$' + receipt.change.toFixed(2));
         printer.printCentered(receipt.company['name']);
         var address = receipt.company['contact_address'].split("\n");
         printer.printCentered(address[0]);
@@ -114,50 +123,37 @@ exports.print_receipt = function(req, res) {
         printer.printCentered(' ');
         printer.printCommand('\x1d\x56\x01'); // Partially cut the paper;
         printer.printCommand('\x1b\x70\x00\x05\x05');
-        console.log('poleDisplay ready.');
         poleDisplay.centeredUpperLine("Bienvenue");
         poleDisplay.centeredBottomLine("Welcome");
     }
 
     //jsonResponse.id = req.query.id;
     jsonResponse = {};
-    console.log('RESPONSE');
-    console.log(jsonResponse);
     res.json(jsonResponse);
 };
 
 exports.open_cashbox = function(req, res) {
     var jsonpData = JSON.parse(req.query.r);
-    console.log(jsonpData);
     //var jsonResponse = {id: jsonpData.params.id};
     var jsonResponse = {};
     res.json(jsonResponse);
 };
 
 exports.pole_display = function(req, res) {
-    console.log('METHOD');
-    console.log(req.method);
-    console.log('QUERY');
-    console.log(req.query);
     var product;
 
     if (req.query.r) {
         var jsonpData = JSON.parse(req.query.r);
         product = jsonpData.params.product;
     }
-console.log("Alex: ",product);
+
     if (product) {
         if (product.context == "product") {
-            console.log('Pole display Product: ', product);
-            console.log("Procuct Name: ", product.product_name);
-            console.log("Price: ", product.price.toFixed(2));
             poleDisplay.text("\x1b\x40");
             poleDisplay.text(padr(product.product_name, 20));
             poleDisplay.text("\r");
             poleDisplay.text(padl('$' + product.price.toFixed(2), 20));
         } else if (product.context == "payment") {
-            console.log('Pole display Payment: ', product);
-            console.log("Total: ", product.total_with_tax.toFixed(2));
             poleDisplay.text("\x1b\x40");
             poleDisplay.centeredUpperLine('TOTAL:  ' + '$' + product.total_with_tax.toFixed(2));
         } else if (product == "reload") {
@@ -178,8 +174,6 @@ console.log("Alex: ",product);
 
 
     var jsonResponse = {};
-    console.log('RESPONSE');
-    console.log(jsonResponse);
     res.json(jsonResponse);
 };
 
