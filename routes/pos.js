@@ -29,6 +29,14 @@ poleDisplay.on("ready", function() {
     poleDisplay.centeredBottomLine(devPorts[3]);
 });
 
+if (devPorts[4] === undefined){
+    devPorts[4] = "Fermé";
+}
+
+if (devPorts[5] === undefined){
+    devPorts[5] = "Closed";
+}
+
 printer.on("ready", function() {
     console.log('printer ready.');
     //printer.printLine("printLine test");
@@ -123,8 +131,8 @@ exports.print_receipt = function(req, res) {
         printer.printCentered(' ');
         printer.printCommand('\x1d\x56\x01'); // Partially cut the paper;
         printer.printCommand('\x1b\x70\x00\x05\x05');
-        poleDisplay.centeredUpperLine("Bienvenue");
-        poleDisplay.centeredBottomLine("Welcome");
+        poleDisplay.centeredUpperLine(devPorts[2]);
+        poleDisplay.centeredBottomLine(devPorts[3]);
     }
 
     //jsonResponse.id = req.query.id;
@@ -157,11 +165,11 @@ exports.pole_display = function(req, res) {
             poleDisplay.text("\x1b\x40");
             poleDisplay.centeredUpperLine('TOTAL:  ' + '$' + product.total_with_tax.toFixed(2));
         } else if (product == "reload") {
-            poleDisplay.centeredUpperLine("Bienvenue");
-            poleDisplay.centeredBottomLine("Welcome");        
+            poleDisplay.centeredUpperLine(devPorts[2]);
+            poleDisplay.centeredBottomLine(devPorts[2]);        
         } else if (product == "closed") {
-            poleDisplay.centeredUpperLine("Fermé");
-            poleDisplay.centeredBottomLine("Closed");
+            poleDisplay.centeredUpperLine(devPorts[4]);
+            poleDisplay.centeredBottomLine(devPorts[5]);
         }        
     } else {
         if (req.query.line1) {
