@@ -1,6 +1,6 @@
 "use strict";
 
-var escpos = require('../lib/node-escpos.js');
+var escpos = require('node-escpos');
 
 var EscPosPrinter = escpos.EscPosPrinter;
 var EscPosDisplay = escpos.EscPosDisplay;

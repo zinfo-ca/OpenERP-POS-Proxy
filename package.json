@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/zinfo-ca/OpenERP-POS-Proxy.git"
+    "url": "git://github.com/zinfo-ca/OpenERP-POS-Proxy"
   },
   "maintainers": [
     {
@@ -27,7 +27,6 @@
   "dependencies": {
     "express": "3.2.4",
     "jade": "*",
-    "serialport": "*",
-    "iconv": "*"
+    "node-escpos": "*"
   }
 }
