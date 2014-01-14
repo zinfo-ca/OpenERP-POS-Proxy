@@ -1,0 +1,10 @@
+.point-of-sale .order .summary .line .tps{
+    font-size: 10px;
+    font-weight: normal;
+    text-align: center;
+}
+.point-of-sale .order .summary .line .tvq{
+    font-size: 10px;
+    font-weight: normal;
+    text-align: center;
+}
